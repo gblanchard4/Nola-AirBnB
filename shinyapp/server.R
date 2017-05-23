@@ -10,6 +10,30 @@ data$lat <- do.call("rbind", lapply(data$location.coordinates, "[[",2))
 # Define server logic required to draw a leaflet map
 shinyServer(function(input, output, session) {
 
+  # Max number of bedrooms
+  output$bedroomSlider <- renderUI({
+    sliderInput(
+      inputId = "selected_bedrooms",
+      label = "Bedroom Limit",
+      min = 1,
+      max = max(as.integer(data$bedroom_limit), na.rm=TRUE),
+      value = c(1, max(as.integer(data$bedroom_limit), na.rm=TRUE)),
+      step = 1
+    )
+  })
+
+  # Max number of guests
+  output$guestSlider <- renderUI({
+    sliderInput(
+      inputId = "selected_guests",
+      label = "Guest Occupancy Limit",
+      min = 1,
+      max = max(as.integer(data$guest_occupancy_limit), na.rm=TRUE),
+      value = c(1, max(as.integer(data$guest_occupancy_limit), na.rm=TRUE)),
+      step = 1
+    )
+  })
+
   # Data reacts to input
   filteredData <- reactive({
     subset(data, license_type %in% input$type)
@@ -28,9 +52,9 @@ shinyServer(function(input, output, session) {
     )
   })
 
-
   observe({
     observeData <- filteredData()
+    output$n_str <- renderText({ nrow(observeData) })
     leafletProxy("map") %>%
     clearMarkers() %>%
     addMarkers(

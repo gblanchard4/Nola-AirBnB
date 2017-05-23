@@ -13,11 +13,18 @@ shinyUI(fluidPage(
         inputId = "type",
         label =  "License Type",
         choices = c("Temporary STR", "Commercial STR", "Accessory STR"),
-        selected = c("Temporary STR", "Commercial STR", "Accessory STR"))
+        selected = c("Temporary STR", "Commercial STR", "Accessory STR")
+      ),
+      uiOutput("bedroomSlider"),
+      uiOutput("guestSlider")
     ),
 
     mainPanel(
-      leafletOutput("map")
-    )
+      leafletOutput("map"),
+      wellPanel(
+        span("Number of Short Term Rentals Selected:", textOutput("n_str", inline = TRUE))
+      )
+    ),
+
   )
 ))
